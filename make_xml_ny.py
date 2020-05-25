@@ -15,8 +15,13 @@ avenue_width=21
 avenue_pavement=5.5
 n_blocks_hor=12
 n_blocks_vert=39
+scale=0.2412
+variables=[block_width, block_height, street_width,avenue_width,avenue_pavement,street_pavement]
+scaled_variables=[x*scale for x in variables]
+block_width, block_height, street_width,avenue_width,avenue_pavement,street_pavement = scaled_variables
+
 def middle_to_top_left(rect_array,map_width):
-    return rect_array + np.array([map_width/2,map_width/2])
+    return rect_array #- np.array([map_width,map_width])
 def array_to_trash(rect_array,map_width):
     top_left=rect_array[1,:]
     bot_right=rect_array[3,:]
@@ -36,7 +41,7 @@ map_width= int(map_width) +1
 if not  map_width % 2 == 0 :
     map_width+=1
 
-corner=np.array([0,0]) - np.array([map_width/2,map_width/2])
+corner=np.array([0,0]) #- np.array([map_width/2,map_width/2])
 
 
 def corners_grid(start_corner,n_hor,n_vert,hor_dist,vert_dist):
@@ -75,18 +80,19 @@ def block_to_alley(block_array,alley_percent,alley_offset):
 img = Image.new("RGB", (map_width, map_width))
 canvas = ImageDraw.Draw(img) 
 polygon_list=[]
-polygon_tags=[]
 
+#obstacle loop
 for corner in corners:
     red = np.random.randint(0,255)
     green = np.random.randint(0,255)
     blue =  np.random.randint(0,255)
     color=(red,green,blue) 
+    color="green"
 
     block_array=block(corner,block_width,block_height)
     if np.random.randint(1,101)<0:
         alley_offset= np.random.normal(loc=0,scale=0.3)
-        block_left_array, alley_array, block_right_array = block_to_alley(block_array,0.05,alley_offset)
+        block_left_array, alley_array, block_right_array = block_to_alley(block_array,0.2,alley_offset)
         shape=array_to_trash(block_left_array,map_width)
         canvas.rectangle(shape, fill =color) 
         shape=array_to_trash(alley_array,map_width)
@@ -95,11 +101,40 @@ for corner in corners:
         canvas.rectangle(shape,fill=color)
         continue
     polygon_list.append(block_array)
-    polygon_tags.append("deepforest")
+   
     shape=array_to_trash(block_array,map_width)
-    canvas.rectangle(shape, fill =color) 
-img.show()
 
+
+
+    canvas.rectangle(shape, fill =color) 
+
+
+#region loop
+region_tags=[]
+region_arrays=[]
+for block_array in polygon_list:
+    top_left=block_array[1,:]
+    top_right=block_array[2,:]
+    bot_left=block_array[0,:]
+    bot_right=block_array[3,:]
+    pavement_left=block(bot_left-np.array([avenue_pavement,0]),avenue_pavement,block_height)
+    pavement_right=pavement_left + np.array([block_width+avenue_pavement,0])
+    pavement_top=block(top_left,block_width,street_pavement)
+    pavement_bot=pavement_top-np.array([0,block_height+street_pavement])
+    region_arrays.append(pavement_left)
+    region_arrays.append(pavement_right)
+    region_arrays.append(pavement_top)
+    region_arrays.append(pavement_bot)
+    region_tags += ["sidewalk"]*4
+
+
+
+for region in region_arrays:
+    shape=array_to_trash(region,map_width)
+    canvas.rectangle(shape,fill="grey")
+
+
+img.show()
 
 
 def env_xml_maker(obstacle_list,region_arrays,region_tags,map_size,env_name):
@@ -154,13 +189,14 @@ def env_xml_maker(obstacle_list,region_arrays,region_tags,map_size,env_name):
     file= open("NY.env","w")
     file.write(xml_data)
 
-obstacle_list= polygon_list
+obstacle_list = polygon_list
 
-region_arrays=[]
 
-region_tags=[]
+
+
 #for test
-region_arrays.append(obstacle_list[0])
-region_tags.append("deepforest")
+
+
+
 env_xml_maker(obstacle_list,region_arrays,region_tags,[map_width,map_width],"NY")
 print("done")
