@@ -15,6 +15,7 @@ avenue_pavement=5.5
 n_blocks_hor=12
 n_blocks_vert=39
 scale=0.2412
+
 variables=[block_width, block_height, street_width,avenue_width,avenue_pavement,street_pavement]
 scaled_variables=[x*scale for x in variables]
 block_width, block_height, street_width,avenue_width,avenue_pavement,street_pavement = scaled_variables

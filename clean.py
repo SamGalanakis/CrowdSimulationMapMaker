@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 import PIL.ImageDraw as ImageDraw
 import PIL.Image as Image
 from helper import env_xml_maker
+import copy
 green_road_length=3170
 width=2900
 pixel_width=1500
@@ -18,6 +19,7 @@ avenue_pavement=5.5
 n_blocks_hor=12
 n_blocks_vert=39
 scale=0.2412
+scale=1
 variables=[block_width, block_height, street_width,avenue_width,avenue_pavement,street_pavement]
 scaled_variables=[x*scale for x in variables]
 block_width, block_height, street_width,avenue_width,avenue_pavement,street_pavement = scaled_variables
@@ -37,7 +39,8 @@ def corner_to_array(bot_left,width,height):
     ans[3,:]= ans[0,:] +np.array([width,0])
     return ans
 
-
+# so i is roads from bottom to top 
+#j is avenue from left to right
 def copy_grid(array,n_hor,n_vert,hor_dist,vert_dist):
     array_list=[]
     for i in range(0,n_vert):
@@ -86,6 +89,7 @@ intersection_obstacle=corner_to_array(block_0[2,:]+arr(avenue_pavement,street_pa
 
 
 obstacles=[block_0,top_road,right_road,intersection_obstacle]
+obstacle_tags=["block","road_top","road_right","intersection"]
 region_list=[]
 obstacle_list=[]
 region_tags_list=[]
@@ -96,8 +100,24 @@ for index,region in enumerate(regions):
     
     region_list.extend(copy_grid(region,n_hor,n_vert,h_dist,v_dist))
     region_tags_list.extend([region_tags[index]]*(n_hor*n_vert))
-for obstacle in obstacles:
+for index,obstacle in enumerate(obstacles):
     obstacle_list.extend(copy_grid(obstacle,n_hor,n_vert,h_dist,v_dist))
+
+def close_road(obstacle_list,road_index,n_hor,n_vert,region_list,regions_tags_list):
+
+    
+    for x in [1]:
+        block_row_start=road_index*n_hor
+        obstacle_start=n_hor*n_vert*x
+        extracted=copy.deepcopy(obstacle_list[obstacle_start+block_row_start:obstacle_start+block_row_start+n_hor])
+        del obstacle_list[obstacle_start+block_row_start:obstacle_start+block_row_start+n_hor]
+        region_list.extend(extracted)
+        regions_tags_list.extend(["road marking"]*n_hor)
+    return region_list,region_tags_list
+
+
+region_list,region_tags=close_road(obstacle_list,15,n_hor,n_vert,region_list,region_tags_list)
+
 
 env_xml_maker(obstacle_list,region_list,region_tags_list,[map_width,map_width],"NY")
 
