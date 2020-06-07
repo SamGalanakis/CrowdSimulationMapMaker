@@ -13,11 +13,11 @@ block_width=282
 block_height=73
 street_width=15
 street_pavement=4.5
-
+n_hor=12
+n_vert=2
 avenue_width=21
 avenue_pavement=5.5
-n_blocks_hor=12
-n_blocks_vert=39
+
 scale=0.2412
 scale=1
 variables=[block_width, block_height, street_width,avenue_width,avenue_pavement,street_pavement]
@@ -48,7 +48,7 @@ def copy_grid(array,n_hor,n_vert,hor_dist,vert_dist):
             array_list.append(array+arr(hor_dist*j,vert_dist*i))
     return array_list
 
-map_width = (block_width+avenue_width+avenue_pavement)*n_blocks_hor + avenue_width+avenue_pavement
+map_width = (block_width+avenue_width+avenue_pavement)*n_hor + avenue_width+avenue_pavement
 map_width= int(map_width) +1
 v_dist=block_height+street_width+street_pavement*2
 h_dist=block_width+avenue_width+avenue_pavement*2
@@ -94,7 +94,7 @@ region_list=[]
 obstacle_list=[]
 region_tags_list=[]
 n_hor=12
-n_vert=39
+n_vert=2#39
 # n_hor=n_vert=2
 for index,region in enumerate(regions):
     
