@@ -45,5 +45,5 @@ def env_xml_maker(obstacle_list,region_arrays,region_tags,map_size,env_name):
             point2D.set("y",f"{point[1]}")
     xml_data = ET.tostring(env,encoding='utf8', method='xml').decode()
 
-    file= open("C:\\Users\\samme\\Google_Drive\\Code_library\\CoronaSim\\data\\NY_small.env","w")
+    file= open("C:\\Users\\samme\\Google_Drive\\Code_library\\CoronaSim\\data\\NY_closed.env","w")
     file.write(xml_data)
