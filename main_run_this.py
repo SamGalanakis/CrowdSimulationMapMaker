@@ -118,8 +118,8 @@ def close_road(obstacle_list,road_index,n_hor,n_vert,region_list,regions_tags_li
 
 
 
-region_list,region_tags_list = close_road(obstacle_list,17,n_hor,n_vert,region_list,region_tags_list)
-region_list,region_tags_list = close_road(obstacle_list,17,n_hor,n_vert,region_list,region_tags_list)
+# region_list,region_tags_list = close_road(obstacle_list,17,n_hor,n_vert,region_list,region_tags_list)
+# region_list,region_tags_list = close_road(obstacle_list,17,n_hor,n_vert,region_list,region_tags_list)
 env_xml_maker(obstacle_list,region_list,region_tags_list,[map_width,map_width],"NY")
 
 
