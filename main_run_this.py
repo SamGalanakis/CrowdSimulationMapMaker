@@ -5,6 +5,8 @@ import PIL.ImageDraw as ImageDraw
 import PIL.Image as Image
 from helper import env_xml_maker
 import copy
+
+
 green_road_length=3170
 width=2900
 pixel_width=1500
@@ -57,7 +59,7 @@ if not  map_width % 2 == 0 :
     map_width+=1
 
 corner=arr(0,0)
-# corner=arr(300,300)
+
 block_0=corner_to_array(corner,block_width,block_height)
 
 #pavements
@@ -93,8 +95,10 @@ obstacle_tags=["block","road_top","road_right","intersection"]
 region_list=[]
 obstacle_list=[]
 region_tags_list=[]
-n_hor=12
-n_vert=39#39
+
+# number of blocks horizontal and vertical commented is max for chosen size (used for full map)
+n_hor=2 #12
+n_vert=4#39
 # n_hor=n_vert=2
 for index,region in enumerate(regions):
     
@@ -117,9 +121,13 @@ def close_road(obstacle_list,road_index,n_hor,n_vert,region_list,regions_tags_li
 
 
 
+# This is how you close roads:
 
 # region_list,region_tags_list = close_road(obstacle_list,17,n_hor,n_vert,region_list,region_tags_list)
 # region_list,region_tags_list = close_road(obstacle_list,17,n_hor,n_vert,region_list,region_tags_list)
+
+
+#Make env xml!
 env_xml_maker(obstacle_list,region_list,region_tags_list,[map_width,map_width],"NY")
 
 

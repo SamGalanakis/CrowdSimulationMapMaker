@@ -4,7 +4,13 @@ import xml.etree.ElementTree as ET
 import PIL.ImageDraw as ImageDraw
 import PIL.Image as Image
 
+
+
 def env_xml_maker(obstacle_list,region_arrays,region_tags,map_size,env_name):
+    """Compiles env xml each input must be a list with indexes matching so region_arrays[i] must be region of type region_tags[i] 
+    each obstacle in the list is represented by a (?,2) numpy array wit each row representing a corner of polygon in clockwise order."""
+
+
     env =  ET.Element("environment")
     env.set("configfile","data/regiontypes.cfg")
     layer_0 = ET.SubElement(env, "layer")
@@ -45,5 +51,5 @@ def env_xml_maker(obstacle_list,region_arrays,region_tags,map_size,env_name):
             point2D.set("y",f"{point[1]}")
     xml_data = ET.tostring(env,encoding='utf8', method='xml').decode()
 
-    file= open("Maps//NY.env","w")
+    file= open("Maps//NY_square.env","w")
     file.write(xml_data)
